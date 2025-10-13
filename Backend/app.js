@@ -18,12 +18,19 @@ app.use(express.json());
 app.use(cookieParser());
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.NODE_ENV === 'development' 
-          ? 'http://localhost:5173'       // local dev frontend
-          : process.env.FRONTEND_URL,    // deployed frontend
-  credentials: true, // allows cookies and auth headers
-}));
+const corsOptions = {
+  origin: process.env.NODE_ENV === "development"
+          ? "http://localhost:5173"
+          : process.env.FRONTEND_URL,  // Deployed frontend
+  credentials: true,               // allow cookies
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"], // for JWT header
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests for all routes
+app.options("*", cors(corsOptions));
 
 // Routes
 app.use("/api/v1/products", products);

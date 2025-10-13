@@ -8,16 +8,14 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load environment variables
 dotenv.config({ path: path.resolve(__dirname, "config/.env") });
 
-
-// Check if DB_URI is loaded (debug)
+// Debug
 console.log("DB_URI from env:", process.env.DB_URI);
 
 // Connect to MongoDB
 connectMongoDB();
-
-
 
 // Start server
 const PORT = process.env.PORT || 5000;
@@ -31,5 +29,3 @@ process.on("unhandledRejection", (err) => {
   console.log("Shutting down server due to unhandled promise rejection");
   server.close(() => process.exit(1));
 });
-
-
