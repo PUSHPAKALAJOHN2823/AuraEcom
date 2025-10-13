@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "http://localhost:5173", // your React app’s URL
+  origin: "https://auraecom-fe.onrender.com", // your React app’s URL
   credentials: true,               // if you’re using cookies/auth
 }));
 
