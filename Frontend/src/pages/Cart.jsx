@@ -6,8 +6,10 @@ import { updateQuantity, removeFromCart } from '../redux/cartSlice';
 const Cart = () => {
   const dispatch = useDispatch();
   const { items } = useSelector((state) => state.cart);
-const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
+  // Calculate total quantity and price
+  const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const total = items.reduce((acc, item) => acc + item.quantity * item.price, 0);
 
   const updateItemQuantity = (id, quantity) => {
     if (quantity < 1) {
