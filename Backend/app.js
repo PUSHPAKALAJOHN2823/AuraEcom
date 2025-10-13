@@ -17,13 +17,15 @@ app.use(cookieParser());
 const corsOptions = {
   origin: process.env.NODE_ENV === "development"
           ? "http://localhost:5173"
-          : process.env.FRONTEND_URL,
-  credentials: true,
+          : "https://auraecom-fe.onrender.com", // ✅ comma fixed
+  credentials: true,                            // allow cookies
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization"], // allow JWT header
 };
 
-app.use(cors(corsOptions));  // automatically handles preflight
+app.use(cors(corsOptions)); // apply globally
+
+
 
 // Routes
 app.use("/api/v1/products", products);
