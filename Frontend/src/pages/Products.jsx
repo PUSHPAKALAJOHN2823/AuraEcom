@@ -2,16 +2,18 @@ import { useEffect, useState, useCallback } from "react";
 import { debounce } from "lodash";
 import api from "../utils/api";
 import ProductCard from "../components/ProductCard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1); // Default to 1 if not provided
+  const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [sortOption, setSortOption] = useState(""); // e.g., price-low, price-high, ratings
+  const [sortOption, setSortOption] = useState("");
 
   const categories = ["All", "Men", "Women", "Kids"];
   const sortOptions = [
@@ -43,21 +45,19 @@ const Products = () => {
         if (sortOption) queryParams.append("sort", sortOption);
 
         const res = await api.get(`/products/products?${queryParams.toString()}`);
-        console.log("API Response:", res.data);
         if (res.data.success) {
           setProducts(res.data.products || []);
-          // Ensure totalPages is set, fallback to 1 if not provided
           setTotalPages(res.data.totalPages || Math.ceil((res.data.total || 10) / 10) || 1);
         } else {
           setError(res.data.message || "Failed to fetch products");
           setProducts([]);
-          setTotalPages(1); // Reset to 1 on error
+          setTotalPages(1);
         }
       } catch (err) {
         console.error("❌ Fetch error:", err.response?.data || err.message);
         setError(err.response?.data?.message || "Error fetching products");
         setProducts([]);
-        setTotalPages(1); // Reset to 1 on error
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
@@ -66,9 +66,7 @@ const Products = () => {
   }, [currentPage, searchTerm, selectedCategory, sortOption]);
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   const handleSearch = (e) => {
@@ -92,7 +90,9 @@ const Products = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-7xl">
-      <h1 className="text-4xl md:text-5xl font-bold font-bold text-center mb-6 text-indigo-900">Shop Our Products</h1>
+      <h1 className="text-4xl md:text-5xl font-bold text-center mb-8 text-indigo-900">
+        Shop Our Products
+      </h1>
 
       {/* Search, Filter, and Sort UI */}
       <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-between items-center">
@@ -114,13 +114,14 @@ const Products = () => {
             </button>
           )}
         </div>
+
         {/* Category Filters */}
-        <div className="flex gap-2 flex-wrap justify-center sm:justify-start">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide flex-wrap justify-center sm:justify-start">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => handleCategoryChange(category)}
-              className={`px-4 py-2 rounded-full font-medium ${
+              className={`px-4 py-2 rounded-full font-medium whitespace-nowrap ${
                 selectedCategory === category
                   ? "bg-primary text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -130,6 +131,7 @@ const Products = () => {
             </button>
           ))}
         </div>
+
         {/* Sort Dropdown */}
         <select
           value={sortOption}
@@ -146,7 +148,7 @@ const Products = () => {
 
       {/* Results and Products */}
       {loading ? (
-        <div className="text-center py-12">
+        <div className="text-center py-12" role="status" aria-live="polite">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading products...</p>
         </div>
@@ -154,18 +156,20 @@ const Products = () => {
         <div className="text-center py-12 text-red-500">{error}</div>
       ) : products.length > 0 ? (
         <>
-          <p className="mb-4 text-gray-600">
-            Showing {products.length} of{" "}
-            {products.length === 10 ? "10+" : products.length} products{" "}
+          <p className="mb-4 text-gray-600 text-center sm:text-left">
+            Showing {products.length} of {products.length === 10 ? "10+" : products.length} products{" "}
             {searchTerm ? `for "${searchTerm}"` : ""} in {selectedCategory}
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
             {products.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>
+
+          {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center mt-8 space-x-4">
+            <div className="flex justify-center mt-8 space-x-4 flex-wrap">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -188,10 +192,23 @@ const Products = () => {
         </>
       ) : (
         <p className="text-center py-12 text-gray-500">
-          No products found {searchTerm ? `for "${searchTerm}"` : ""}. Try a different search or
-          category.
+          No products found {searchTerm ? `for "${searchTerm}"` : ""}. Try a different search or category.
         </p>
       )}
+
+      {/* Toast Notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </div>
   );
 };

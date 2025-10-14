@@ -7,7 +7,6 @@ const Cart = () => {
   const dispatch = useDispatch();
   const { items } = useSelector((state) => state.cart);
 
-  // Calculate total quantity and price
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
   const total = items.reduce((acc, item) => acc + item.quantity * item.price, 0);
 
@@ -21,18 +20,18 @@ const Cart = () => {
 
   if (items.length === 0) {
     return (
-      <div className="bg-white py-12 px-4 text-gray-900 min-h-screen">
+      <div className="bg-gray-50 min-h-screen flex items-center justify-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="container mx-auto max-w-4xl text-center"
+          className="max-w-md text-center bg-white p-8 rounded-2xl shadow-lg"
         >
-          <h1 className="text-3xl font-bold mb-4 text-indigo-900">Your Cart is Empty</h1>
-          <p className="text-gray-600 mb-6">Looks like you haven’t added any items yet.</p>
+          <h1 className="text-3xl font-bold mb-4 text-gray-800">Your Cart is Empty</h1>
+          <p className="text-gray-500 mb-6">Looks like you haven’t added any items yet.</p>
           <Link
             to="/products"
-            className="bg-indigo-500 text-white py-2 px-6 rounded-xl hover:bg-indigo-600 transition duration-300"
+            className="bg-indigo-500 text-white py-2 px-6 rounded-lg hover:bg-indigo-600 transition duration-300"
           >
             Continue Shopping
           </Link>
@@ -42,16 +41,71 @@ const Cart = () => {
   }
 
   return (
-    <div className="bg-white py-8 px-4 text-gray-900 min-h-screen">
+    <div className="bg-gray-50 min-h-screen px-4 py-8">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="container mx-auto max-w-4xl"
+        className="max-w-5xl mx-auto"
       >
-        <h1 className="text-3xl font-bold mb-6 text-indigo-300">Shopping Cart</h1>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">Shopping Cart</h1>
+
+        {/* Mobile: Card Layout */}
+        <div className="space-y-4 md:hidden">
+          {items.map((item) => (
+            <div key={item.id} className="bg-white rounded-2xl shadow p-4 flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0 sm:space-x-4">
+              <div className="flex items-center space-x-4 w-full sm:w-auto">
+                <img
+                  src={item.image?.[0]?.url || item.image || '/placeholder.jpg'}
+                  alt={item.name}
+                  className="w-20 h-20 object-cover rounded-xl"
+                  onError={(e) => (e.target.src = '/placeholder.jpg')}
+                />
+                <div>
+                  <h2 className="font-medium text-gray-800">{item.name}</h2>
+                  <p className="text-gray-600">${item.price.toFixed(2)}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => updateItemQuantity(item.id, item.quantity - 1)}
+                  disabled={item.quantity <= 1}
+                  className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg disabled:opacity-50 hover:bg-gray-300 transition duration-200"
+                >
+                  -
+                </motion.button>
+                <span className="px-2 text-gray-800">{item.quantity}</span>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
+                  className="bg-gray-200 text-gray-800 px-3 py-1 rounded-lg hover:bg-gray-300 transition duration-200"
+                >
+                  +
+                </motion.button>
+              </div>
+
+              <div className="flex items-center space-x-4 mt-2 sm:mt-0">
+                <p className="text-gray-700 font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => dispatch(removeFromCart(item.id))}
+                  className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition duration-200"
+                >
+                  Remove
+                </motion.button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: Table Layout */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left border-collapse bg-white rounded-2xl shadow">
             <thead>
               <tr className="bg-gray-100">
                 <th className="p-4 text-gray-600 font-semibold">Product</th>
@@ -81,7 +135,7 @@ const Cart = () => {
                         whileTap={{ scale: 0.95 }}
                         onClick={() => updateItemQuantity(item.id, item.quantity - 1)}
                         disabled={item.quantity <= 1}
-                        className="bg-gray-300 text-gray-800 px-2 py-1 rounded-xl disabled:opacity-50 hover:bg-gray-400 transition duration-200"
+                        className="bg-gray-200 text-gray-800 px-2 py-1 rounded-lg disabled:opacity-50 hover:bg-gray-300 transition duration-200"
                       >
                         -
                       </motion.button>
@@ -90,7 +144,7 @@ const Cart = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
-                        className="bg-gray-300 text-gray-800 px-2 py-1 rounded-xl hover:bg-gray-400 transition duration-200"
+                        className="bg-gray-200 text-gray-800 px-2 py-1 rounded-lg hover:bg-gray-300 transition duration-200"
                       >
                         +
                       </motion.button>
@@ -102,7 +156,7 @@ const Cart = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => dispatch(removeFromCart(item.id))}
-                      className="bg-red-500 text-white px-3 py-1 rounded-xl hover:bg-red-600 transition duration-200"
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition duration-200"
                     >
                       Remove
                     </motion.button>
@@ -112,15 +166,17 @@ const Cart = () => {
             </tbody>
           </table>
         </div>
-        <div className="mt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <Link to="/products" className="text-indigo-500 underline hover:text-indigo-600 transition duration-300">
+
+        {/* Cart Summary */}
+        <div className="mt-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <Link to="/products" className="text-indigo-600 underline hover:text-indigo-700">
             Continue Shopping
           </Link>
           <div className="flex items-center space-x-4">
-            <h2 className="text-2xl font-bold text-indigo-300">Total: ${total.toFixed(2)}</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Total: ${total.toFixed(2)}</h2>
             <Link
               to="/checkout"
-              className="bg-indigo-500 text-white py-2 px-6 rounded-xl hover:bg-indigo-600 transition duration-300"
+              className="bg-indigo-600 text-white py-2 px-6 rounded-lg hover:bg-indigo-700 transition duration-300"
             >
               Proceed to Checkout
             </Link>
