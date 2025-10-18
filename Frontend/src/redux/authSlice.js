@@ -6,13 +6,15 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     token: localStorage.getItem('token') || null,
-    isLoading: true, // Start with loading true to wait for session restore
+    isLoading: false, // Changed: Start with false, will be set true when checking auth
+    isInitialized: false, // New: Track if we've checked for existing session
   },
   reducers: {
     setCredentials: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
-      state.isLoading = false; // Set loading to false after successful restore
+      state.isInitialized = true;
+      // Removed: Don't set isLoading here, let setLoading handle it
     },
     logout: (state) => {
       state.user = null;
@@ -23,8 +25,11 @@ const authSlice = createSlice({
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+    setInitialized: (state, action) => {
+      state.isInitialized = action.payload;
+    },
   },
 });
 
-export const { setCredentials, logout, setLoading } = authSlice.actions;
+export const { setCredentials, logout, setLoading, setInitialized } = authSlice.actions;
 export default authSlice.reducer;

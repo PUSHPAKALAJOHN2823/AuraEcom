@@ -22,29 +22,48 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(setLoading(true)); // Set loading state
+    dispatch(setLoading(true));
+    
     try {
       const res = await api.post('/users/login', form);
-      const { token, user } = res.data;
+      console.log('Login Response:', res.data); // Debug log
+      
+      // Handle different possible response structures
+      const token = res.data.token || res.data.data?.token;
+      const user = res.data.user || res.data.data?.user;
+      
       if (token && user) {
+        // Store token first
         localStorage.setItem('token', token);
+        
+        // Update Redux state
         dispatch(setCredentials({ user, token }));
+        
+        // Show success message
         toast.success('Login successful! Redirecting...', {
           position: 'top-right',
-          autoClose: 2000,
-          onClose: () => navigate('/'),
+          autoClose: 1500,
         });
-        setTimeout(() => navigate('/'), 2500); // Fallback redirect
+        
+        // Navigate after toast
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
       } else {
-        throw new Error('Invalid response from server');
+        throw new Error('Invalid server response');
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Login failed', {
+      console.error('Login Error:', err); // Debug log
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          'Login failed. Please try again.';
+      
+      toast.error(errorMessage, {
         position: 'top-right',
         autoClose: 3000,
       });
     } finally {
-      dispatch(setLoading(false)); // Reset loading state
+      dispatch(setLoading(false));
     }
   };
 
@@ -54,6 +73,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 sm:p-6 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-gray-800 via-gray-900 to-black">
+      <ToastContainer theme="dark" />
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -140,7 +160,6 @@ const Login = () => {
           </div>
         </div>
       </motion.div>
-      <ToastContainer theme="dark" />
     </div>
   );
 };

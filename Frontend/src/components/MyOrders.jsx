@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const MyOrders = () => {
   const { user, token } = useSelector((state) => state.auth);
@@ -10,6 +10,7 @@ const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expandedOrder, setExpandedOrder] = useState(null);
 
   useEffect(() => {
     if (!user || !token) {
@@ -19,7 +20,7 @@ const MyOrders = () => {
 
     const fetchOrders = async () => {
       try {
-        const { data } = await api.get('/orders/myorders'); // ✅ backend route
+        const { data } = await api.get('/orders/myorders');
         setOrders(data.orders || []);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch orders');
@@ -34,7 +35,6 @@ const MyOrders = () => {
   const markAsDelivered = async (orderId) => {
     try {
       await api.put(`/orders/${orderId}/deliver`);
-      // Re-fetch updated order list
       const { data } = await api.get('/orders/myorders');
       setOrders(data.orders || []);
     } catch (err) {
@@ -47,22 +47,33 @@ const MyOrders = () => {
   if (orders.length === 0) return <div className="text-center py-8 text-gray-600">No orders found.</div>;
 
   return (
-    <div className="bg-white py-8 px-4 text-gray-900 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="container mx-auto max-w-4xl"
-      >
+    <div className="bg-gray-50 py-8 px-4 min-h-screen">
+      <div className="container mx-auto max-w-4xl">
         <h1 className="text-3xl font-bold mb-6 text-indigo-900">My Orders</h1>
-        <div className="bg-white shadow-lg rounded-xl overflow-hidden">
+        <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order._id} className="border-b last:border-b-0 p-4 hover:bg-gray-50">
+            <motion.div
+              key={order._id}
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="bg-white shadow-md rounded-xl p-4 cursor-pointer"
+              onClick={() =>
+                setExpandedOrder(expandedOrder === order._id ? null : order._id)
+              }
+            >
               <div className="flex justify-between items-center flex-wrap">
                 <div>
-                  <p className="text-lg font-semibold text-gray-700">Order #{order._id.slice(-8)}</p>
-                  <p className="text-sm text-gray-500">Date: {new Date(order.createdAt).toLocaleDateString()}</p>
-                  <p className="text-sm text-gray-500">Total: ₹{order.totalPrice.toFixed(2)}</p>
+                  <p className="text-lg font-semibold text-gray-700">
+                    Order #{order._id.slice(-8)}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Date: {new Date(order.createdAt).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Total: ₹{order.totalPrice.toFixed(2)}
+                  </p>
                   <p
                     className={`text-sm font-medium ${
                       order.isDelivered ? 'text-green-600' : 'text-yellow-600'
@@ -71,34 +82,46 @@ const MyOrders = () => {
                     Status: {order.isDelivered ? 'Delivered' : 'Pending'}
                   </p>
                 </div>
-
-                <div className="flex items-center gap-4 mt-2 sm:mt-0">
+                {user.role === 'admin' && !order.isDelivered && (
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate(`/order/${order._id}`)}
-                    className="text-indigo-500 hover:underline"
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent card toggle
+                      markAsDelivered(order._id);
+                    }}
+                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-md text-sm"
                   >
-                    View Details
+                    Mark Delivered
                   </motion.button>
-
-                  {/* Admin-only button */}
-                  {user.role === 'admin' && !order.isDelivered && (
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => markAsDelivered(order._id)}
-                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-md text-sm"
-                    >
-                      Mark Delivered
-                    </motion.button>
-                  )}
-                </div>
+                )}
               </div>
-            </div>
+
+              {/* Expandable details */}
+              <AnimatePresence>
+                {expandedOrder === order._id && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-4 border-t pt-4 space-y-2"
+                  >
+                    {order.orderItems.map((item) => (
+                      <div
+                        key={item.product}
+                        className="flex justify-between text-sm text-gray-600"
+                      >
+                        <span>{item.name} x {item.qty}</span>
+                        <span>₹{(item.price * item.qty).toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

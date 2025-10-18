@@ -13,19 +13,17 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// CORS config
-const corsOptions = {
-  origin: process.env.NODE_ENV === "development"
-          ? "http://localhost:5173"
-          : "https://auraecom-fe.onrender.com", // ✅ comma fixed
-  credentials: true,                            // allow cookies
+// CORS configuration
+const allowedOrigins = process.env.NODE_ENV === "development"
+  ? ["http://localhost:5173"]
+  : ["https://auraecom-fe.onrender.com"];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,             // allow cookies
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"], // allow JWT header
-};
-
-app.use(cors(corsOptions)); // apply globally
-
-
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 // Routes
 app.use("/api/v1/products", products);
@@ -33,7 +31,7 @@ app.use("/api/v1/users", users);
 app.use("/api/v1/admin", admins);
 app.use("/api/v1/orders", orders);
 
-// Error handling
+// Error handling middleware
 app.use(errorHandleMiddleware);
 
 export default app;

@@ -1,13 +1,14 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // https://auraecom-be.onrender.com/api/v1
+  baseURL: import.meta.env.VITE_API_URL, // e.g., /api/v1 (local) or deployed URL
   withCredentials: true,                  // send cookies cross-origin
 });
 
+// Add token automatically from localStorage (optional)
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // optional fallback
+    const token = localStorage.getItem('token'); 
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
