@@ -1,6 +1,5 @@
-// App.jsx
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCredentials, setLoading } from './redux/authSlice';
 import api from './utils/api';
@@ -20,19 +19,26 @@ import ResetPassword from './pages/ResetPassword';
 import MyOrders from './components/MyOrders';
 import OrderSuccess from './pages/OrderSuccess';
 
+// ✅ Scroll-to-top logic (defined inside App.jsx)
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
+
+  return null;
+};
+
 function MainLayout({ children }) {
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900">
       <Header />
-      {/* Add padding to push content below fixed navbar */}
-      <main className="flex-grow pt-7">
-        {children}
-      </main>
+      <main className="flex-grow pt-7">{children}</main>
       <Footer />
     </div>
   );
 }
-
 
 function AuthLayout({ children }) {
   return (
@@ -44,7 +50,8 @@ function AuthLayout({ children }) {
 
 const ProtectedRoute = ({ children }) => {
   const { user, token, isLoading } = useSelector((state) => state.auth);
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>;
+  if (isLoading)
+    return <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>;
   return user && token ? children : <Navigate to="/login" replace />;
 };
 
@@ -54,7 +61,7 @@ function App() {
 
   useEffect(() => {
     const restoreSession = async () => {
-      dispatch(setLoading(true)); // Start loading
+      dispatch(setLoading(true));
       const token = localStorage.getItem('token');
       if (token) {
         try {
@@ -68,22 +75,27 @@ function App() {
           dispatch(setCredentials({ user: null, token: null }));
         }
       } else {
-        dispatch(setCredentials({ user: null, token: null })); // Ensure state is reset if no token
+        dispatch(setCredentials({ user: null, token: null }));
       }
-      dispatch(setLoading(false)); // Done loading
+      dispatch(setLoading(false));
     };
     restoreSession();
   }, [dispatch]);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>;
+  if (isLoading)
+    return <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>;
 
   return (
     <Router>
+      {/* ✅ Scrolls to top on every route change */}
+      <ScrollToTop />
+
       <Routes>
         <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
         <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
         <Route path="/forgot-password" element={<AuthLayout><ForgotPassword /></AuthLayout>} />
         <Route path="/reset-password/:token" element={<AuthLayout><ResetPassword /></AuthLayout>} />
+
         <Route
           path="/"
           element={
@@ -179,8 +191,8 @@ function App() {
           element={
             <ProtectedRoute>
               <MainLayout>
-              <div className="bg-white py-12 text-center">Order Details Page (Placeholder)</div>
-            </MainLayout>
+                <div className="bg-white py-12 text-center">Order Details Page (Placeholder)</div>
+              </MainLayout>
             </ProtectedRoute>
           }
         />

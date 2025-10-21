@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
+import { Link } from "react-router-dom"; // <-- Import Link
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import api from "../utils/api";
 import ProductCard from "../components/ProductCard";
-import TestimonialCard from "../components/TestimonialCard";
-
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -18,8 +17,8 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await api.get("/products/products"); // /api/v1/products/products
-        setProducts(res.data.products.slice(0, 6)); // Top 6
+        const res = await api.get("/products/products");
+        setProducts(res.data.products.slice(0, 6));
       } catch (err) {
         setError(
           err.response?.data?.message ||
@@ -51,110 +50,62 @@ const Home = () => {
           effect="fade"
           className="h-[500px] md:h-[600px]"
         >
-          <SwiperSlide>
-            <div
-              className="h-full bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1570857502809-08184874388e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c2hvcHxlbnwwfHwwfHx8MA%3D%3D')",
-              }}
-            >
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-center p-6">
-                <div className="animate-fade-in">
-                  <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-shadow">
-                    Welcome to Aurawear!
-                  </h1>
-                  <p className="text-lg md:text-xl mb-6">
-                    Discover the latest trends in fashion.
-                  </p>
-                  <a
-                    href="/products"
-                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition transform hover:scale-105"
-                  >
-                    Shop Now
-                  </a>
+          {[
+            {
+              title: "Welcome to Aurawear!",
+              subtitle: "Discover the latest trends in fashion.",
+              button: "Shop Now",
+              bg:
+                "https://images.unsplash.com/photo-1570857502809-08184874388e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c2hvcHxlbnwwfHwwfHx8MA%3D%3D",
+              btnClass: "bg-blue-600 text-white hover:bg-blue-700",
+            },
+            {
+              title: "New Arrivals",
+              subtitle: "Explore our latest collection.",
+              button: "Discover Now",
+              bg:
+                "https://images.unsplash.com/photo-1487744480471-9ca1bca6fb7d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjR8fHNob3B8ZW58MHx8MHx8fDA%3D",
+              btnClass: "bg-blue-600 text-white hover:bg-blue-700",
+            },
+            {
+              title: "Seasonal Sale",
+              subtitle: "Up to 30% off this season!",
+              button: "Shop Sale",
+              bg:
+                "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzN8fHNob3B8ZW58MHx8MHx8fDA%3D",
+              btnClass: "bg-yellow-400 text-gray-900 hover:bg-yellow-500",
+            },
+            {
+              title: "Featured Products",
+              subtitle: "Check out our best sellers.",
+              button: "View Now",
+              bg:
+                "https://images.unsplash.com/photo-1617286647344-95c86d56748a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODB8fHNob3B8ZW58MHx8MHx8fDA%3D",
+              btnClass: "bg-green-600 text-white hover:bg-green-700",
+            },
+          ].map((slide, idx) => (
+            <SwiperSlide key={idx}>
+              <div
+                className="h-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${slide.bg})` }}
+              >
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-center p-6">
+                  <div className="animate-fade-in">
+                    <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-shadow">
+                      {slide.title}
+                    </h1>
+                    <p className="text-lg md:text-xl mb-6">{slide.subtitle}</p>
+                    <Link
+                      to="/products"
+                      className={`px-6 py-3 rounded-lg transition transform hover:scale-105 ${slide.btnClass}`}
+                    >
+                      {slide.button}
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div
-              className="h-full bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1487744480471-9ca1bca6fb7d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjR8fHNob3B8ZW58MHx8MHx8fDA%3D')",
-              }}
-            >
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-center p-6">
-                <div className="animate-fade-in">
-                  <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-shadow">
-                    New Arrivals
-                  </h1>
-                  <p className="text-lg md:text-xl mb-6">
-                    Explore our latest collection.
-                  </p>
-                  <a
-                    href="/products"
-                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition transform hover:scale-105"
-                  >
-                    Discover Now
-                  </a>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div
-              className="h-full bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzN8fHNob3B8ZW58MHx8MHx8fDA%3D')",
-              }}
-            >
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-center p-6">
-                <div className="animate-fade-in">
-                  <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-shadow">
-                    Seasonal Sale
-                  </h1>
-                  <p className="text-lg md:text-xl mb-6">
-                    Up to 30% off this season!
-                  </p>
-                  <a
-                    href="/products"
-                    className="bg-yellow-400 text-gray-900 px-6 py-3 rounded-lg hover:bg-yellow-500 transition transform hover:scale-105"
-                  >
-                    Shop Sale
-                  </a>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div
-              className="h-full bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1617286647344-95c86d56748a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODB8fHNob3B8ZW58MHx8MHx8fDA%3D')",
-              }}
-            >
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-center p-6">
-                <div className="animate-fade-in">
-                  <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-shadow">
-                    Featured Products
-                  </h1>
-                  <p className="text-lg md:text-xl mb-6">
-                    Check out our best sellers.
-                  </p>
-                  <a
-                    href="/products"
-                    className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition transform hover:scale-105"
-                  >
-                    View Now
-                  </a>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </section>
 
@@ -168,41 +119,38 @@ const Home = () => {
             Limited time offer. Don’t miss out—shop now!
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white bg-opacity-10 p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-              <img
-                src="https://images.unsplash.com/photo-1552810143-899ab18457ed?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDJ8fHNob3AlMjBkZWFsc3xlbnwwfHwwfHx8MA%3D%3D"
-                alt="Offer 1"
-                className="w-full h-40 object-cover rounded-t-lg"
-              />
-              <h3 className="text-xl font-semibold mt-4">Fashion Deals</h3>
-              <p className="text-red-900 mt-2">Get 70% off on all clothing.</p>
-              <a
-                href="/products"
-                className="mt-4 inline-block bg-yellow-400 text-gray-900 px-5 py-2 rounded-lg hover:bg-yellow-500 transition"
+            {[
+              {
+                title: "Fashion Deals",
+                img: "https://images.unsplash.com/photo-1552810143-899ab18457ed?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDJ8fHNob3AlMjBkZWFsc3xlbnwwfHwwfHx8MA%3D%3D",
+                desc: "Get 70% off on all clothing.",
+              },
+              {
+                title: "Accessory Sale",
+                img: "https://images.unsplash.com/photo-1662289032144-3ed681fdd260?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTR8fGFjY2Vzc29yaWVzJTIwZGVhbHN8ZW58MHx8MHx8fDA%3D",
+                desc: "Save big on accessories today!",
+              },
+            ].map((offer, idx) => (
+              <div
+                key={idx}
+                className="bg-white bg-opacity-10 p-6 rounded-lg shadow-lg hover:shadow-xl transition"
               >
-                Shop Now
-              </a>
-            </div>
-            <div className="bg-white bg-opacity-10 p-6 rounded-lg shadow-lg hover:shadow-xl transition">
-              <img
-                src="https://images.unsplash.com/photo-1662289032144-3ed681fdd260?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTR8fGFjY2Vzc29yaWVzJTIwZGVhbHN8ZW58MHx8MHx8fDA%3D"
-                alt="Offer 2"
-                className="w-full h-40 object-cover rounded-t-lg"
-              />
-              <h3 className="text-xl font-semibold mt-4">Accessory Sale</h3>
-              <p className="text-red-900 mt-2">
-                Save big on accessories today!
-              </p>
-              <a
-                href="/products"
-                className="mt-4 inline-block bg-yellow-400 text-gray-900 px-5 py-2 rounded-lg hover:bg-yellow-500 transition"
-              >
-                Shop Now
-              </a>
-            </div>
+                <img
+                  src={offer.img}
+                  alt={offer.title}
+                  className="w-full h-40 object-cover rounded-t-lg"
+                />
+                <h3 className="text-xl font-semibold mt-4">{offer.title}</h3>
+                <p className="text-red-900 mt-2">{offer.desc}</p>
+                <Link
+                  to="/products"
+                  className="mt-4 inline-block bg-yellow-400 text-gray-900 px-5 py-2 rounded-lg hover:bg-yellow-500 transition"
+                >
+                  Shop Now
+                </Link>
+              </div>
+            ))}
           </div>
-          <div className="absolute top-0 left-0 w-64 h-64 bg-yellow-400 opacity-20 rounded-full -translate-x-1/2 -translate-y-1/2 animate-pulse-slow"></div>
-          <div className="absolute bottom-0 right-0 w-72 h-72 bg-yellow-400 opacity-20 rounded-full translate-x-1/2 translate-y-1/2 animate-pulse-slow"></div>
         </div>
       </section>
 
@@ -211,31 +159,26 @@ const Home = () => {
         <h2 className="text-3xl font-bold text-center mb-8 text-indigo-900">
           Featured Categories
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-6">
           {[
             {
               title: "Men's Fashion",
               image:
-                "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjh8fG1lbnMlMjBmYXNoaW9ufGVufDB8fDB8fHww",
+                "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=500&auto=format&fit=crop&q=60",
             },
             {
               title: "Women's Fashion",
               image:
-                "https://images.unsplash.com/photo-1525562723836-dca67a71d5f1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTd8fHdvbWVuJTIwZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D",
+                "https://images.unsplash.com/photo-1525562723836-dca67a71d5f1?w=500&auto=format&fit=crop&q=60",
             },
             {
               title: "Kids",
               image:
-                "https://images.unsplash.com/photo-1756626287301-5c73d6139282?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTM0fHxraWRzJTIwZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D",
+                "https://images.unsplash.com/photo-1756626287301-5c73d6139282?w=500&auto=format&fit=crop&q=60",
             },
-            {
-              title: "Accessories",
-              image:
-                "https://images.unsplash.com/photo-1443884590026-2e4d21aee71c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjZ8fGFjY2Vzc29yaWVzJTIwZGVhbHN8ZW58MHx8MHx8fDA%3D",
-            },
-          ].map((category, index) => (
+          ].map((category, idx) => (
             <div
-              key={index}
+              key={idx}
               className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-2"
             >
               <img
@@ -247,12 +190,12 @@ const Home = () => {
                 <h3 className="text-xl font-semibold text-gray-800">
                   {category.title}
                 </h3>
-                <a
-                  href="/products"
+                <Link
+                  to="/products"
                   className="text-blue-600 hover:underline mt-2 inline-block"
                 >
                   Shop Now
-                </a>
+                </Link>
               </div>
             </div>
           ))}
@@ -279,6 +222,7 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Testimonials */}
       <section className="py-16 bg-gray-500 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-400 via-gray-500 to-black">
         <div className="container mx-auto px-4">
           <motion.h2
@@ -335,6 +279,5 @@ const Home = () => {
     </div>
   );
 };
-
 
 export default Home;

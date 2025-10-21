@@ -1,7 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Hero1 from "../assets/hero1.png";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const goToProducts = () => {
+    navigate("/products");
+  };
+
   return (
     <section className="relative w-full h-[80vh] max-h-[700px] overflow-hidden rounded-lg shadow-lg">
       {/* Background Image */}
@@ -24,13 +31,21 @@ const Hero = () => {
             Grab the hottest deals of the season and upgrade your style today!
           </p>
           <ul className="space-y-3 text-sm sm:text-base md:text-lg font-semibold">
-            <li className="flex items-center justify-center md:justify-start gap-2"><span>Flat 50% Off on New Arrivals</span></li>
+            <li className="flex items-center justify-center md:justify-start gap-2">
+              <span>Flat 50% Off on New Arrivals</span>
+            </li>
           </ul>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <button className="bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-accent hover:text-primary transition shadow-md">
+            <button
+              onClick={goToProducts}
+              className="bg-primary text-secondary px-6 py-3 rounded-lg font-semibold hover:bg-accent hover:text-primary transition shadow-md"
+            >
               Shop Now
             </button>
-            <button className="bg-transparent border border-primary text-primary px-6 py-3 rounded-lg font-semibold hover:bg-primary hover:text-secondary transition">
+            <button
+              onClick={goToProducts}
+              className="bg-transparent border border-primary text-primary px-6 py-3 rounded-lg font-semibold hover:bg-primary hover:text-secondary transition"
+            >
               Learn More
             </button>
           </div>

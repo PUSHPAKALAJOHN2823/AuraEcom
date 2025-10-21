@@ -1,5 +1,6 @@
-import { motion } from 'framer-motion';
-import { FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa';
+import { motion } from "framer-motion";
+import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
+import { Link } from "react-router-dom"; // ✅ Import Link
 
 const Footer = () => (
   <footer className="bg-gray-900 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-gray-800 via-gray-900 to-black text-white py-12 relative overflow-hidden">
@@ -10,7 +11,7 @@ const Footer = () => (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="space-y-4"
         >
           <h3 className="text-2xl font-bold tracking-tight">Aurawear</h3>
@@ -23,30 +24,34 @@ const Footer = () => (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           className="space-y-4"
         >
           <h4 className="text-lg font-semibold text-indigo-300">Quick Links</h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="/about" className="hover:text-indigo-400 transition duration-200">
+              <Link
+                to="/about"
+                className="hover:text-indigo-400 transition duration-200"
+              >
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/shop" className="hover:text-indigo-400 transition duration-200">
+              <Link
+                to="/products"
+                className="hover:text-indigo-400 transition duration-200"
+              >
                 Shop
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/contact" className="hover:text-indigo-400 transition duration-200">
+              <Link
+                to="/contact"
+                className="hover:text-indigo-400 transition duration-200"
+              >
                 Contact
-              </a>
-            </li>
-            <li>
-              <a href="/faq" className="hover:text-indigo-400 transition duration-200">
-                FAQ
-              </a>
+              </Link>
             </li>
           </ul>
         </motion.div>
@@ -55,10 +60,12 @@ const Footer = () => (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
+          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
           className="space-y-4"
         >
-          <h4 className="text-lg font-semibold text-indigo-300">Connect With Us</h4>
+          <h4 className="text-lg font-semibold text-indigo-300">
+            Connect With Us
+          </h4>
           <div className="flex justify-center md:justify-start space-x-4">
             <motion.a
               href="https://facebook.com"
@@ -95,7 +102,7 @@ const Footer = () => (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6, ease: 'easeOut' }}
+        transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
         className="mt-12 pt-8 border-t border-gray-700/50 text-center text-sm text-gray-400"
       >
         <p>&copy; 2025 Aurawear. All rights reserved.</p>

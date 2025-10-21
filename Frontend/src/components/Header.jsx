@@ -27,10 +27,7 @@ const Header = () => {
       setProfileOpen(false);
       navigate("/login");
     } catch (err) {
-      console.error(
-        "Logout failed:",
-        err.response?.data?.message || err.message
-      );
+      console.error("Logout failed:", err.response?.data?.message || err.message);
     }
   };
 
@@ -87,9 +84,7 @@ const Header = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute right-0 mt-3 w-48 bg-gray-800 rounded-lg shadow-lg p-3 text-center"
                 >
-                  <p className="text-gray-300 font-semibold mb-2">
-                    {user.name}
-                  </p>
+                  <p className="text-gray-300 font-semibold mb-2">{user.name}</p>
                   <Link
                     to="/myorders"
                     onClick={() => setProfileOpen(false)}
@@ -141,7 +136,7 @@ const Header = () => {
         </button>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* ✅ Mobile Menu with My Orders added */}
       {menuOpen && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -171,6 +166,16 @@ const Header = () => {
           {user ? (
             <>
               <p className="text-gray-300 font-semibold">{user.name}</p>
+
+              {/* ✅ Added My Orders button for mobile */}
+              <Link
+                to="/myorders"
+                onClick={() => setMenuOpen(false)}
+                className="block bg-gray-700 text-white py-1.5 rounded-md hover:bg-gray-600 transition"
+              >
+                My Orders
+              </Link>
+
               <button
                 onClick={handleLogout}
                 className="w-full bg-indigo-500 text-white py-1.5 rounded-md hover:bg-indigo-600 transition"
