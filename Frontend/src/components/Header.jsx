@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { logout } from "../redux/authSlice";
-import api from "../utils/api";
+import { performLogout } from "../redux/authSlice";
 import {
   ShoppingCartIcon,
   Bars3Icon,
@@ -19,16 +18,8 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
-  const handleLogout = async () => {
-    try {
-      await api.post("/users/logout");
-      dispatch(logout());
-      setMenuOpen(false);
-      setProfileOpen(false);
-      navigate("/login");
-    } catch (err) {
-      console.error("Logout failed:", err.response?.data?.message || err.message);
-    }
+  const handleLogout = () => {
+    dispatch(performLogout()); // ✅ Clears auth + cart + localStorage
   };
 
   return (
@@ -128,15 +119,11 @@ const Header = () => {
           className="md:hidden text-gray-200 hover:text-indigo-400"
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          {menuOpen ? (
-            <XMarkIcon className="h-6 w-6" />
-          ) : (
-            <Bars3Icon className="h-6 w-6" />
-          )}
+          {menuOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
         </button>
       </nav>
 
-      {/* ✅ Mobile Menu with My Orders added */}
+      {/* Mobile Menu */}
       {menuOpen && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -167,7 +154,6 @@ const Header = () => {
             <>
               <p className="text-gray-300 font-semibold">{user.name}</p>
 
-              {/* ✅ Added My Orders button for mobile */}
               <Link
                 to="/myorders"
                 onClick={() => setMenuOpen(false)}

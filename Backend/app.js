@@ -5,6 +5,7 @@ import products from "./routes/productRoutes.js";
 import users from "./routes/userRoutes.js";
 import admins from "./routes/adminRoutes.js";
 import orders from "./routes/orderRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
 import errorHandleMiddleware from "./middleware/error.js";
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/v1/products", products);
 app.use("/api/v1/users", users);
 app.use("/api/v1/admin", admins);
 app.use("/api/v1/orders", orders);
+app.use("/api/v1/cart", cartRoutes);
 
 // Error handling middleware
 app.use(errorHandleMiddleware);
