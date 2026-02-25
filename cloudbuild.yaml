@@ -9,9 +9,8 @@ steps:
     id: 'Push'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-now-repo/aura-ecom:latest']
 
-  # Step 3: Deploy to Cloud Run
+ # Step 3: Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'Deploy'
     entrypoint: gcloud
     args:
       - 'run'
@@ -24,9 +23,16 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
-      # IMPORTANT: Replace the value below with your actual MongoDB Atlas connection string
       - '--set-env-vars'
-      - 'MONGO_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@cluster0.mongodb.net/aura'
+      - 'MONGO_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm,'
+      - 'JWT_SECRET_KEY=pushsecretkey,'
+      - 'JWT_EXPIRE=3d,'
+      - 'SMTP_SERVICE=gmail,'
+      - 'SMTP_MAIL=pushpakalajohn.2@gmail.com,'
+      - 'SMTP_PASSWORD=kifz auvr uimg dvic,'
+      - 'RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY,'
+      - 'RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05,'
+      - 'NODE_ENV=production'
 
 options:
   logging: CLOUD_LOGGING_ONLY
