@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import app from "./app.js";
 import { connectMongoDB } from "./config/db.js";
-
+import express from "express"; // Added this
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -11,14 +11,21 @@ const __dirname = path.dirname(__filename);
 // Load environment variables
 dotenv.config({ path: path.resolve(__dirname, "config/.env") });
 
-// Debug
-console.log("DB_URI from env:", process.env.DB_URI);
-
 // Connect to MongoDB
 connectMongoDB();
 
-// Start server
-const PORT = process.env.PORT || 5000;
+// --- FRONTEND GLUE CODE ---
+// Serve the static files from the 'public' folder
+app.use(express.static(path.join(__dirname, "public")));
+
+// Handle React routing (send all non-API requests to index.html)
+// Note: Put this AFTER your app.use("/api/...", ...) routes if they are in app.js
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "public", "index.html"));
+});
+
+// Start server (Google Cloud Run uses 8080)
+const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
@@ -26,6 +33,5 @@ const server = app.listen(PORT, () => {
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err) => {
   console.error(`Unhandled Rejection: ${err.message}`);
-  console.log("Shutting down server due to unhandled promise rejection");
   server.close(() => process.exit(1));
 });
