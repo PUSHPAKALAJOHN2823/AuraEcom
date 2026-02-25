@@ -1,0 +1,32 @@
+steps:
+  # Step 1: Build the unified Full-Stack image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-now-repo/aura-ecom:latest', '.']
+
+  # Step 2: Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-now-repo/aura-ecom:latest']
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'Deploy'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'aura-ecom-service'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-now-repo/aura-ecom:latest'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      # IMPORTANT: Replace the value below with your actual MongoDB Atlas connection string
+      - '--set-env-vars'
+      - 'MONGO_URI=mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@cluster0.mongodb.net/aura'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
