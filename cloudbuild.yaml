@@ -2,21 +2,14 @@ steps:
   # Step 1: Build
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build'
-    args: [
-      'build', 
-      '-t', 'us-west1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest', 
-      '.'
-    ]
+    args: ['build', '-t', 'us-west1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest', '.']
 
   # Step 2: Push
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push'
-    args: [
-      'push', 
-      'us-west1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest'
-    ]
+    args: ['push', 'us-west1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest']
 
-  # Step 3: Deploy (With Quoted Env Vars)
+  # Step 3: Deploy (Hardened for spaces and special characters)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'Deploy'
     entrypoint: gcloud
@@ -31,8 +24,9 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      # We use ^ as a custom delimiter to safely handle the spaces in your password
       - '--set-env-vars'
-      - "DB_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm,JWT_SECRET_KEY=pushsecretkey,JWT_EXPIRE=3d,SMTP_SERVICE=gmail,SMTP_MAIL=pushpakalajohn.2@gmail.com,SMTP_PASSWORD=kifz auvr uimg dvic,RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY,RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05,NODE_ENV=production"
+      - "^:^DB_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm:JWT_SECRET_KEY=pushsecretkey:JWT_EXPIRE=3d:SMTP_SERVICE=gmail:SMTP_MAIL=pushpakalajohn.2@gmail.com:SMTP_PASSWORD=kifz auvr uimg dvic:RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY:RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05:NODE_ENV=production"
 
 options:
   logging: CLOUD_LOGGING_ONLY
