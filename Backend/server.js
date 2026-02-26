@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Handle React routing (send all non-API requests to index.html)
 // Note: Put this AFTER your app.use("/api/...", ...) routes if they are in app.js
-app.get("*", (req, res) => {
+app.get("(*)", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
