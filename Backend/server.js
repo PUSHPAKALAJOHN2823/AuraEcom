@@ -15,16 +15,16 @@ dotenv.config({ path: path.resolve(__dirname, "config/.env") });
 connectMongoDB();
 
 // --- FRONTEND GLUE CODE ---
-// Serve the static files from the 'public' folder
+// 1. Serve static files from the 'public' folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// Handle React routing (send all non-API requests to index.html)
-// FIXED FOR EXPRESS 5: We changed "(*)" to "/:any*" to provide a required parameter name
-app.get('/:any*', (req, res) => {
+// 2. Handle React routing with a REGEX catch-all
+// We use /.*/ as a regular expression literal to bypass Express 5's string parser
+app.get(/.*/, (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
-// Start server (Google Cloud Run uses 8080)
+// Start server
 const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
