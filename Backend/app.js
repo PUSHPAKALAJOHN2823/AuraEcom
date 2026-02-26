@@ -17,7 +17,7 @@ app.use(cookieParser());
 // CORS configuration
 const allowedOrigins = process.env.NODE_ENV === "development"
   ? ["http://localhost:5173"]
-  : ["https://auraecom-fe.onrender.com"];
+  : ["https://aura-ecom-service-256265740892.us-west1.run.app"];
 
 app.use(cors({
   origin: allowedOrigins,
