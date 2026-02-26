@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import app from "./app.js";
 import { connectMongoDB } from "./config/db.js";
-import express from "express"; // Added this
+import express from "express"; 
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -19,8 +19,8 @@ connectMongoDB();
 app.use(express.static(path.join(__dirname, "public")));
 
 // Handle React routing (send all non-API requests to index.html)
-// Note: Put this AFTER your app.use("/api/...", ...) routes if they are in app.js
-app.get("(*)", (req, res) => {
+// FIXED FOR EXPRESS 5: We changed "(*)" to "/:any*" to provide a required parameter name
+app.get('/:any*', (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
