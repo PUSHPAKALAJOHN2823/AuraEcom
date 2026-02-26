@@ -1,23 +1,35 @@
 steps:
-  # Build the image
+  # Step 1: Build the unified Full-Stack image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-now-repo/aura-ecom:latest', '.']
+    id: 'Build'
+    args: [
+      'build', 
+      '-t', 'us-east1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest', 
+      '.'
+    ]
 
-  # Push to Registry
+  # Step 2: Push the image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-now-repo/aura-ecom:latest']
+    id: 'Push'
+    args: [
+      'push', 
+      'us-east1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest'
+    ]
 
-  # Deploy to Cloud Run
+  # Step 3: Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'Deploy'
     entrypoint: gcloud
     args:
       - 'run'
       - 'deploy'
       - 'aura-ecom-service'
       - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/weather-now-repo/aura-ecom:latest'
+      - 'us-east1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest'
       - '--region'
-      - 'us-central1'
+      - 'us-east1'
+      - '--platform'
+      - 'managed'
       - '--allow-unauthenticated'
       - '--set-env-vars'
       - 'DB_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm,'
@@ -29,3 +41,6 @@ steps:
       - 'RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY,'
       - 'RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05,'
       - 'NODE_ENV=production'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
