@@ -1,5 +1,5 @@
 steps:
-  # Step 1: Build the unified Full-Stack image
+  # Step 1: Build
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build'
     args: [
@@ -8,7 +8,7 @@ steps:
       '.'
     ]
 
-  # Step 2: Push the image to Artifact Registry
+  # Step 2: Push
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push'
     args: [
@@ -16,7 +16,7 @@ steps:
       'us-west1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest'
     ]
 
-  # Step 3: Deploy to Cloud Run
+  # Step 3: Deploy (Fixed formatting)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'Deploy'
     entrypoint: gcloud
@@ -32,15 +32,7 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      - 'DB_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm'
-      - 'JWT_SECRET_KEY=pushsecretkey'
-      - 'JWT_EXPIRE=3d'
-      - 'SMTP_SERVICE=gmail'
-      - 'SMTP_MAIL=pushpakalajohn.2@gmail.com'
-      - 'SMTP_PASSWORD=kifz auvr uimg dvic'
-      - 'RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY'
-      - 'RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05'
-      - 'NODE_ENV=production'
+      - 'DB_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm,JWT_SECRET_KEY=pushsecretkey,JWT_EXPIRE=3d,SMTP_SERVICE=gmail,SMTP_MAIL=pushpakalajohn.2@gmail.com,SMTP_PASSWORD=kifz auvr uimg dvic,RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY,RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05,NODE_ENV=production'
 
 options:
   logging: CLOUD_LOGGING_ONLY
