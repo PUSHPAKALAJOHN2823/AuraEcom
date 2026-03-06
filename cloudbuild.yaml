@@ -9,7 +9,7 @@ steps:
     id: 'Push'
     args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/aura-repo/aura-ecom:latest']
 
-  # Step 3: Deploy (Fixed Delimiter)
+  # Step 3: Deploy
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'Deploy'
     entrypoint: gcloud
@@ -20,12 +20,12 @@ steps:
       - '--image'
       - 'us-central1-docker.pkg.dev/$PROJECT_ID/aura-repo/aura-ecom:latest'
       - '--region'
-      - 'us-centarl1'
+      - 'us-central1'
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      # We use ^|^ at the start to tell gcloud to use | as the separator
       - "^|^DB_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm|JWT_SECRET_KEY=pushsecretkey|JWT_EXPIRE=3d|SMTP_SERVICE=gmail|SMTP_MAIL=pushpakalajohn.2@gmail.com|SMTP_PASSWORD=kifz auvr uimg dvic|RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY|RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05|NODE_ENV=production"
+
 options:
   logging: CLOUD_LOGGING_ONLY
