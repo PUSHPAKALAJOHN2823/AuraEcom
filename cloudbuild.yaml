@@ -1,15 +1,15 @@
 steps:
-  # Step 1: Build
+  # Step 1: Build using dynamic variables
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/aura-repo/aura-ecom:latest', '.']
+    args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/aura-ecom:latest', '.']
 
-  # Step 2: Push
+  # Step 2: Push using dynamic variables
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/aura-repo/aura-ecom:latest']
+    args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/aura-ecom:latest']
 
-  # Step 3: Deploy
+  # Step 3: Deploy using dynamic variables
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'Deploy'
     entrypoint: gcloud
@@ -18,14 +18,19 @@ steps:
       - 'deploy'
       - 'aura-ecom-service'
       - '--image'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/aura-repo/aura-ecom:latest'
+      - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/aura-ecom:latest'
       - '--region'
-      - 'us-central1'
+      - '${_LOCATION}'
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      - "^|^DB_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm|JWT_SECRET_KEY=pushsecretkey|JWT_EXPIRE=3d|SMTP_SERVICE=gmail|SMTP_MAIL=pushpakalajohn.2@gmail.com|SMTP_PASSWORD=kifz auvr uimg dvic|RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY|RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05|NODE_ENV=production"
+      - "^|^DB_URI=your_uri|JWT_SECRET=your_secret" # ... (rest of your env vars)
+
+# Set default values just in case
+substitutions:
+  _LOCATION: us-central1
+  _REPO_NAME: aura-repo
 
 options:
   logging: CLOUD_LOGGING_ONLY
