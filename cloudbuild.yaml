@@ -2,12 +2,12 @@ steps:
   # Step 1: Build
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build'
-    args: ['build', '-t', 'us-west1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/aura-repo/aura-ecom:latest', '.']
 
   # Step 2: Push
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push'
-    args: ['push', 'us-west1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest']
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/aura-repo/aura-ecom:latest']
 
   # Step 3: Deploy (Fixed Delimiter)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -18,9 +18,9 @@ steps:
       - 'deploy'
       - 'aura-ecom-service'
       - '--image'
-      - 'us-west1-docker.pkg.dev/$PROJECT_ID/ecom-repo/aura-ecom:latest'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/aura-repo/aura-ecom:latest'
       - '--region'
-      - 'us-west1'
+      - 'us-centarl1'
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
