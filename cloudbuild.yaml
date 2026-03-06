@@ -9,7 +9,7 @@ steps:
     id: 'Push'
     args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO_NAME}/aura-ecom:latest']
 
-  # Step 3: Deploy using dynamic variables
+  # Step 3: Deploy with ALL Environment Variables
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'Deploy'
     entrypoint: gcloud
@@ -25,9 +25,10 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
       - '--set-env-vars'
-      - "^|^DB_URI=your_uri|JWT_SECRET=your_secret" # ... (rest of your env vars)
+      # This block contains ALL your required credentials
+      - "^|^DB_URI=mongodb+srv://pushpajohn:john%402@e-com.nkbqpap.mongodb.net/E-Comm?retryWrites=true&w=majority&appName=E-Comm|JWT_SECRET_KEY=pushsecretkey|JWT_EXPIRE=3d|SMTP_SERVICE=gmail|SMTP_MAIL=pushpakalajohn.2@gmail.com|SMTP_PASSWORD=kifz auvr uimg dvic|RAZORPAY_KEY_ID=rzp_test_RQEYzWx6ZaLAaY|RAZORPAY_KEY_SECRET=WBJYRq2r4TmhPRhrAiYgMi05|NODE_ENV=production"
 
-# Set default values just in case
+# Fallback values for manual runs
 substitutions:
   _LOCATION: us-central1
   _REPO_NAME: aura-repo
